@@ -12,7 +12,7 @@ const SoundToggle = ({ isOn, onToggle }: SoundToggleProps) => {
 
   useEffect(() => {
     // Initialize audio element
-    audioRef.current = new Audio('/audios/background.mp3');
+    audioRef.current = new Audio('/audios/bgaudio.mp3');
     audioRef.current.loop = true;
 
     // Clean up on unmount

@@ -1,33 +1,53 @@
-import { useEffect, useRef } from 'react';
-// import backgroundVideo from '@/assets/videos/background.mp4';
+import { useEffect, useRef, useState } from 'react';
 
-export const VideoBackground = () => {
+interface VideoBackgroundProps {
+  onVideoLoaded?: () => void;
+}
+
+export const VideoBackground = ({ onVideoLoaded }: VideoBackgroundProps) => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    if (videoRef.current) {
-      videoRef.current.playbackRate = 0.75;
-    }
-  }, []);
+    const video = videoRef.current;
+    if (!video) return;
+
+    // Set playback rate for smoother motion
+    video.playbackRate = 0.75;
+
+    // Optimize video loading - use loadeddata for faster response
+    const handleLoadedData = () => {
+      setIsLoaded(true);
+      onVideoLoaded?.();
+    };
+
+    // Use loadeddata instead of canplaythrough for faster loading feedback
+    video.addEventListener('loadeddata', handleLoadedData, { once: true });
+
+    return () => {
+      video.removeEventListener('loadeddata', handleLoadedData);
+    };
+  }, [onVideoLoaded]);
 
   return (
-    <div className="fixed inset-0 w-full h-full overflow-hidden -z-10">
-      <div className="absolute inset-0 bg-black/50 z-10" />
+    <div className="absolute inset-0 w-full h-full overflow-hidden">
       <video
         ref={videoRef}
         autoPlay
         muted
         loop
         playsInline
-        className="absolute w-[130%] h-[130%] left-1/2 top-1/2 object-cover scale-110
-                   transform -translate-x-1/2 -translate-y-1/2 transition-transform duration-1000
-                   sm:w-[120%] sm:h-[120%] md:w-[110%] md:h-[110%]"
+        preload="auto"
+        className={`absolute top-1/2 left-1/2 min-w-full min-h-full object-cover transition-opacity duration-700 ${
+          isLoaded ? 'opacity-100' : 'opacity-0'
+        }`}
         style={{
-          willChange: 'transform',
+          willChange: 'opacity',
+          transform: 'translate(-50%, -50%) translate3d(0, 0, 0)', // Center and hardware accelerate
+          backfaceVisibility: 'hidden', // Optimize rendering
         }}
       >
         <source src="/videos/background.mp4" type="video/mp4" />
-
       </video>
     </div>
   );

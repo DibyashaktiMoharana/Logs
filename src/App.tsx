@@ -1,20 +1,26 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { GamepadIcon, RocketIcon, WalletIcon, UsersIcon, StarIcon, ArrowUpRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
-// import { VideoBackground } from '@/components/VideoBackground';
+import { VideoBackground } from '@/components/VideoBackground';
+import { ModernLoader } from '@/components/ModernLoader';
 import SoundToggle from '@/components/SoundToggle';
-import { useRef,useEffect } from 'react';
+
 function App() {
   const [activeSection, setActiveSection] = useState(0);
   const [isSoundOn, setIsSoundOn] = useState(false);
-  const videoref = useRef<HTMLVideoElement>(null);
-
+  const [isLoading, setIsLoading] = useState(true);
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
-    if (videoref.current) {
-      videoref.current.src = '/videos/background.mp4';
+    // Wait for both video and minimum loading time
+    if (videoLoaded) {
+      // Add a small delay to ensure smooth transition
+      const timer = setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+      return () => clearTimeout(timer);
     }
-  }, []);
+  }, [videoLoaded]);
   const navItems = [
     { icon: GamepadIcon, label: 'Gaming' },
     { icon: RocketIcon, label: 'Launch' },
@@ -24,22 +30,26 @@ function App() {
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white relative overflow-hidden">
-    <video
-      ref={videoref}
-      autoPlay
-      muted
-      loop
-      className="absolute inset-0 w-full h-full object-cover"
-      style={{
-        opacity: 0.3, // Reduce brightness
-        filter: 'sepia(0.5) hue-rotate(-20deg) saturate(1.2)', // Add orangish tint
-      }}
-    />
+    <>
+      {isLoading && <ModernLoader onLoadComplete={() => setIsLoading(false)} />}
+      
+      <div className={`min-h-screen bg-black text-white relative overflow-hidden transition-opacity duration-500 ${
+        isLoading ? 'opacity-0' : 'opacity-100'
+      }`}>
+        {/* Optimized Video Background with filters */}
+        <div 
+          className="absolute inset-0 w-full h-full"
+          style={{
+            opacity: 0.3,
+            filter: 'sepia(0.5) hue-rotate(-20deg) saturate(1.2)',
+          }}
+        >
+          <VideoBackground onVideoLoaded={() => setVideoLoaded(true)} />
+        </div>
 
       {/* Navigation */}
       <nav className="fixed left-8 top-1/2 -translate-y-1/2 z-10">
-        <div className="flex flex-col gap-3 bg-black/30 backdrop-blur-sm rounded-full py-1 px-1 border border-[3px] border-orange-600">
+        <div className="flex flex-col gap-3 bg-black/30 backdrop-blur-sm rounded-full py-1 px-1 border-[3px] border-orange-600">
           {navItems.map((item, index) => (
             <button
               key={index}
@@ -70,7 +80,7 @@ function App() {
           l<span className="text-orange-500">o</span>gs.
         </div>
         <div className="flex items-center gap-4">
-          <button className="group px-6 py-2 rounded-full border border-[3px] border-orange-600 text-orange-500 
+          <button className="group px-6 py-2 rounded-full border-[3px] border-orange-600 text-orange-500 
                            hover:bg-orange-600 hover:text-white transition-all duration-300 text-sm font-medium
                            flex items-center gap-2">
             LET'S TALK
@@ -92,7 +102,7 @@ function App() {
             Modernize the<br />Blog Game
           </h1>
           <p className="text-xl text-gray-300 mb-12 pb-24">
-          Reimagine boring blogs with a Gen-Z twist.<br/>fusing creativity with fearless style.
+            Reimagine boring blogs with a Gen-Z twist.<br />fusing creativity with fearless style.
           </p>
         </div>
       </main>
@@ -109,7 +119,8 @@ function App() {
       </footer>
 
       <SoundToggle isOn={isSoundOn} onToggle={() => setIsSoundOn(!isSoundOn)} />
-    </div>
+      </div>
+    </>
   );
 }
 

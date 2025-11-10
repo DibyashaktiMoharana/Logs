@@ -34,6 +34,15 @@ body {
   }
 }
 
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
 @keyframes move-horizontal {
   0% {
     transform: translateX(-100%);
@@ -71,6 +80,10 @@ body {
 }
 
 @layer utilities {
+  .animate-shimmer {
+    animation: shimmer 2s infinite;
+  }
+
   .animate-move-horizontal {
     animation: move-horizontal 1s infinite linear;
   }
