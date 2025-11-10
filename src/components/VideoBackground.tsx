@@ -38,9 +38,8 @@ export const VideoBackground = ({ onVideoLoaded }: VideoBackgroundProps) => {
         loop
         playsInline
         preload="auto"
-        className={`absolute top-1/2 left-1/2 min-w-full min-h-full object-cover transition-opacity duration-700 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`absolute top-1/2 left-1/2 min-w-full min-h-full object-cover transition-opacity duration-700 ${isLoaded ? 'opacity-100' : 'opacity-0'
+          }`}
         style={{
           willChange: 'opacity',
           transform: 'translate(-50%, -50%) translate3d(0, 0, 0)', // Center and hardware accelerate

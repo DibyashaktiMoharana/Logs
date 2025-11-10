@@ -8,7 +8,7 @@
 
 body {
   margin: 0;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: "Inter", system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: black;
@@ -26,7 +26,8 @@ body {
 
 /* Custom Animations */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -87,7 +88,7 @@ body {
   .animate-move-horizontal {
     animation: move-horizontal 1s infinite linear;
   }
-  
+
   .animate-move-horizontal-reverse {
     animation: move-horizontal-reverse 1s infinite linear;
   }
